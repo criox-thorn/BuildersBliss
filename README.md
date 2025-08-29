@@ -24,17 +24,18 @@ The Texture Generator takes either a block or colour and gives the user-defined-
 ❌ Texture Generator <br>
 
 ### Required Features
-❌ Jar Extraction for other mods <br>
-❌ Colour Averaging for each block <br>
-❌ Block Saving Dict <br>
-❌ ΔE Calculation <br> 
-❌ Gradient Generation <br>
-❌ Random Generator <br>
+✔️ Jar Extraction for other mods <br>
+✔️ Colour Averaging for each block <br>
+✔️ Block Saving Dict <br>
+✔️ ΔE Calculation <br>
+✔️ Gradient Generation <br>
+✔️ Random Colour Generator <br>
+❌ Block Matching <br>
 
 ### Non-Required Dependencies
 ❌ A Toggle for Solid Blocks Only <br>
-❌ A option menu for Side, Top, Bottom, or All Sides of a Block <br>
-❌ Block Saving Cache for faster starts <br>
+❌ A option menu for Side, Top, Bottom, ends or All Sides of a Block <br>
+✔️ Block Saving Cache for faster starts <br>
 ❌ GUI: <br>
 - ❌ Progress Bar for initial colour averaging <br>
 - ❌ Hue Wheel with pins where the average is for each block. A small visualiser while populating the dict. Each Mod gets its own colour <br>
