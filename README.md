@@ -5,15 +5,17 @@ Builder's Bliss is a minecraft builder's best friend. This application is aimed 
 
 ## Modes
 ### Palette Generator
-The Palette Generator itself has two modes: Random, and Picture
+The Palette Generator itself has two modes: Random and Picture.
+
 The Random mode works like every other colour palette generator but instead assigning the five closest blocks to the individual colours. 
+
 The Picture mode generates the user-defined-amount of colours from an uploaded image and then matches the blocks in the same way as the random mode.
 
 ### Gradient Generator
 The Gradient Generator lets you choose two colours to merge between and the user-defined-amount of steps inbetween, then gives you the closest matching blocks to those colours. At any point in the line, clicking on a block will remove it and replace it with the next closest option.
 
 ### Texture Generator
-The Texture Generator takes either a block or colour and gives the user-defined-amount of matches near it. Giving quick and easy texture to make your build interesting
+The Texture Generator takes either a block or colour and gives the user-defined-amount of matches near it. Giving quick and easy texture to make your build interesting.
 
 ## To-Do
 ### Three Main Features
