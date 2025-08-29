@@ -21,6 +21,7 @@ import static com.buildersbliss.model.ColourUtils.rgbToLab;
 
 public class JarExtractor {
     private static final Gson gson = new Gson();
+    static HashMap<String, Block> blockHash = new HashMap<>();
 
     public static void extract(String jarPath, String extPath) throws java.io.IOException {
         // Getting Mod Name
@@ -34,15 +35,14 @@ public class JarExtractor {
         // Creating Mod Folder in folderPath
         File modFolder = new File(extPath + "\\" + folderName);
         if (modFolder.exists()) {
-            System.out.println(folderName + " already exits !!!");
-            return;
+            throw new IOException(folderName + " already exits !!!");
         }
         boolean modFolderCreationSuccess = modFolder.mkdirs();
-        if (!modFolderCreationSuccess){
+        if (!modFolderCreationSuccess) {
             System.err.println("Failed to Create Mod Folder");
         }
 
-        HashMap<String, Block> blockHash = new HashMap<>();
+        HashMap<String, Block> tempBlockHash = new HashMap<>();
 
         //iterating for each file in extract
         while (en.hasMoreElements()) {
@@ -52,7 +52,7 @@ public class JarExtractor {
                 System.out.println("Reading: " + je.getName());
 
                 try (InputStream is = jarFile.getInputStream(je);
-                    InputStreamReader reader = new InputStreamReader(is)) {
+                     InputStreamReader reader = new InputStreamReader(is)) {
                     // Reading block .json file & retrieving block name
                     JsonObject blockJson = gson.fromJson(reader, JsonObject.class);
                     int blockNameIndexBackslash = je.getName().lastIndexOf("/");
@@ -61,6 +61,8 @@ public class JarExtractor {
 
                     // Textures json file structure
                     JsonObject texturesJson = gson.fromJson(blockJson.get("textures"), JsonObject.class);
+
+
 
                     // Accessing Block Data
                     try {
@@ -98,7 +100,7 @@ public class JarExtractor {
                             return;
                         }
                         boolean blockFolderCreationSuccess = blockFolder.mkdirs();
-                        if (!blockFolderCreationSuccess){
+                        if (!blockFolderCreationSuccess) {
                             System.err.println("Failed to Create Block Folder for " + blockFolder.getPath());
                         }
                         extractTextures(all, top, bottom, side, end, jarFile, blockFolder.getPath());
@@ -133,25 +135,29 @@ public class JarExtractor {
                         }
 
                         //Finished Block Console Print
-                        System.out.println(String.format("COMPLETED | Block ID: %s:%s | Parent: %s | Image All: %s | Image Side: %s | Image Top: %s | Image Bottom: %s |  Image End: %s | Texture Faces: %s | All LAB: %s | Top LAB: %s | Bottom LAB: %s | Side LAB: %s | End LAB: %s", folderName, blockName, parent, all, side, top, bottom, end, texturesJson.keySet(), Arrays.toString(allLab), Arrays.toString(topLab), Arrays.toString(bottomLab),Arrays.toString(sideLab),Arrays.toString(endLab)));
-                        Block block = new Block(parent,blockFolder.getPath(),Arrays.stream(texturesJson.keySet().toArray()).map(obj -> (obj != null) ? obj.toString() : "null").toArray(String[]::new),allLab,topLab,bottomLab,sideLab,endLab);
-                        blockHash.put(folderName+":"+blockName, block);
-                    }
-                    catch (NullPointerException e) {
+                        System.out.println(String.format("COMPLETED | Block ID: %s:%s | Parent: %s | Image All: %s | Image Side: %s | Image Top: %s | Image Bottom: %s |  Image End: %s | Texture Faces: %s | All LAB: %s | Top LAB: %s | Bottom LAB: %s | Side LAB: %s | End LAB: %s", folderName, blockName, parent, all, side, top, bottom, end, texturesJson.keySet(), Arrays.toString(allLab), Arrays.toString(topLab), Arrays.toString(bottomLab), Arrays.toString(sideLab), Arrays.toString(endLab)));
+                        Block block = new Block(parent, blockFolder.getPath(), Arrays.stream(texturesJson.keySet().toArray()).map(obj -> (obj != null) ? obj.toString() : "null").toArray(String[]::new), allLab, topLab, bottomLab, sideLab, endLab);
+                        tempBlockHash.put(folderName + ":" + blockName, block);
+                    } catch (NullPointerException e) {
                         // For non-standard blocks
                     }
                 }
             }
         }
-
+        blockHash.putAll(tempBlockHash);
+    }
+    public static String createJSON() throws IOException {
         Gson blockJSON = new GsonBuilder().setPrettyPrinting().create();
-        File modJSON = new File(modFolder, "blocks.json");
+        String filePath = "blocks.json";
+        File modJSON = new File(filePath);
         try (FileWriter writer = new FileWriter(modJSON)) {
             blockJSON.toJson(blockHash, writer);
             System.out.println("Saved blocks.json with " + blockHash.size() + " entries");
+            return filePath;
         }
-
-        System.out.println("Extraction Finished on " + folderName);
+        catch (Exception e) {
+            return null;
+        }
     }
 
     public static File extractTexture(JarFile jarfile, String fp, File outputFile) {
