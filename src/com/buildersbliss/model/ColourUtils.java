@@ -71,6 +71,21 @@ public class ColourUtils {
         return new double[]{L,a,b};
     }
 
+    public static double[] labToLch(double[] lab) {
+        double C = Math.sqrt(lab[1] * lab[1] + lab[2] * lab[2]);           // chroma
+        double H = Math.toDegrees(Math.atan2(lab[2], lab[1]));   // hue angle
+        if (H < 0) H += 360;
+        return new double[] { lab[0], C, H };
+    }
+
+    // Convert LCH back to Lab
+    public static double[] lchToLab(double[] lch) {
+        double hRad = Math.toRadians(lch[2]);
+        double a = Math.cos(hRad) * lch[1];
+        double b = Math.sin(hRad) * lch[1];
+        return new double[] { lch[0], a, b };
+    }
+
     private static double funky(double val) {
         if (val > 0.008856) {
             return Math.pow(val, 1.0 / 3.0);

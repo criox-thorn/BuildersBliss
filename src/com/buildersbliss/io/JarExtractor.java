@@ -67,6 +67,10 @@ public class JarExtractor {
                     // Accessing Block Data
                     try {
                         String parent = blockJson.get("parent").getAsString();
+                        if (parent.contains("door")) {
+                            throw new NullPointerException();
+                        }
+
                         String all = "None";
                         String side = "None";
                         String top = "None";

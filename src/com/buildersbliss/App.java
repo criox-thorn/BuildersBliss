@@ -6,23 +6,25 @@ import java.util.*;
 import java.io.FileInputStream;
 import java.util.Arrays;
 
-import com.buildersbliss.io.BlockMatcher;
+import com.buildersbliss.io.BlockMatch;
 import com.buildersbliss.io.JarExtractor;
-import com.buildersbliss.model.ColourUtils;
-import static com.buildersbliss.core.GradientGenerator.gradient;
-import static com.buildersbliss.io.BlockMatcher.match;
+
+import static com.buildersbliss.core.GradientGenerator.blockMatchingGradient;
+import static com.buildersbliss.core.PaletteGenerator.blockMatchingPalette;
+import static com.buildersbliss.core.TextureGenerator.blockMatchingTexture;
 import static com.buildersbliss.io.JarExtractor.createJSON;
-import static com.buildersbliss.model.ColourUtils.*;
 
 
 public class App {
     public static void main(String[] args) {
         Properties settings = new Properties();
         String extFile = "";
+        String jarFolderPath = "";
 
         try (FileInputStream settingsFile = new FileInputStream("config.properties")) {
             settings.load(settingsFile);
             extFile = settings.getProperty("folderPath");
+            jarFolderPath = settings.getProperty("jarFolderPath");
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error loading settings file.");
@@ -30,8 +32,16 @@ public class App {
 
         String jsonPath = "blocks.json";
 
+
+        File jarFolder = new File(jarFolderPath);
+        System.out.println("Found Files in " + jarFolderPath + ": " + Arrays.toString(jarFolder.list()));
+
         try {
-            JarExtractor.extract("chipped-neoforge-1.21.1-4.0.2.jar", extFile);
+            for (String jarFile : jarFolder.list()) {
+                if (jarFile.endsWith(".jar")) {
+                    JarExtractor.extract(jarFolder.getAbsolutePath() + "\\" + jarFile, extFile);
+                }
+            }
             jsonPath = createJSON();
 
         } catch (IOException e) {
@@ -39,17 +49,8 @@ public class App {
             System.err.println("Error Extracting Jar");
         }
 
-
-
-        ArrayList<double[]> gradientTest = gradient(new double[]{63,46,35},new double[]{11,30,-23},6);
-
-        for (double[] arr : gradientTest) {
-            System.out.println(Arrays.toString(arr));
-        }
-
-        String[] colourMatch = match(new double[]{63.0, 46.0, 35.0}, jsonPath, 10);
-
-        System.out.println(Arrays.toString(colourMatch));
-
+        ArrayList<List<BlockMatch>> blockMatchedGradient = blockMatchingGradient(new double[]{63,46,35}, new double[]{80,12,82}, 7, 5, jsonPath);
+        ArrayList<List<BlockMatch>> blockMatchedPalette = blockMatchingPalette(7, 5, jsonPath);
+        List<BlockMatch> blockMatchedTexture = blockMatchingTexture("chipped-neoforge-1.21.1-4.0.2:gray_terracotta_tiles", "all", 20, jsonPath);
     }
 }

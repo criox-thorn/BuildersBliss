@@ -4,22 +4,21 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.io.File;
 import java.io.FileReader;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import static com.buildersbliss.model.ColourUtils.deltaE2000;
 
-public class BlockMatcher{
-    String blockId;
-    double distance;
+public class BlockMatch {
+    public String blockId;
+    public String face;
+    public double distance;
 
-    public BlockMatcher(String blockId, double distance) {
+    public BlockMatch(String blockId, String face, double distance) {
         this.blockId = blockId;
+        this.face = face;
         this.distance = distance;
     }
 
@@ -27,9 +26,9 @@ public class BlockMatcher{
         return this.blockId;
     }
 
-    public static String[] match(double[] lab, String jsonPath, int amount) {
+    public static List match(double[] lab, String jsonPath, int amount) {
         Gson gson = new Gson();
-        List<BlockMatcher> matches = new ArrayList<>();
+        List<BlockMatch> matches = new ArrayList<>();
 
 
         try {
@@ -69,23 +68,23 @@ public class BlockMatcher{
                 };
                 if (!(allLab[0] == 0 && allLab[1] == 0 && allLab[2] == 0)) {
                     double distance = deltaE2000(lab, allLab);
-                    matches.add(new BlockMatcher(key, distance));
+                    matches.add(new BlockMatch(key, "all", distance));
                 }
                 if (!(topLab[0] == 0 && topLab[1] == 0 && topLab[2] == 0)) {
                     double distance = deltaE2000(lab, topLab);
-                    matches.add(new BlockMatcher(key, distance));
+                    matches.add(new BlockMatch(key, "top", distance));
                 }
                 if (!(bottomLab[0] == 0 && bottomLab[1] == 0 && bottomLab[2] == 0)) {
                     double distance = deltaE2000(lab, bottomLab);
-                    matches.add(new BlockMatcher(key, distance));
+                    matches.add(new BlockMatch(key, "bottom", distance));
                 }
                 if (!(sideLab[0] == 0 && sideLab[1] == 0 && sideLab[2] == 0)) {
                     double distance = deltaE2000(lab, sideLab);
-                    matches.add(new BlockMatcher(key, distance));
+                    matches.add(new BlockMatch(key, "side", distance));
                 }
                 if (!(endLab[0] == 0 && endLab[1] == 0 && endLab[2] == 0)) {
                     double distance = deltaE2000(lab, endLab);
-                    matches.add(new BlockMatcher(key, distance));
+                    matches.add(new BlockMatch(key, "end", distance));
                 }
             }
         }
@@ -94,6 +93,6 @@ public class BlockMatcher{
         }
         matches.sort(Comparator.comparingDouble(m -> m.distance));
 
-        return matches.subList(0, Math.min(amount, matches.size())).stream().map(BlockMatcher::getBlockID).toArray(String[]::new);
+        return matches.subList(0, Math.min(amount, matches.size()));
     }
 }

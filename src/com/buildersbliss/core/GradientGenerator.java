@@ -1,7 +1,12 @@
 package com.buildersbliss.core;
 
+import com.buildersbliss.io.BlockMatch;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static com.buildersbliss.io.BlockMatch.match;
 
 public class GradientGenerator {
     public static ArrayList<double[]> gradient(double[] start, double[] end, int steps) {
@@ -18,10 +23,22 @@ public class GradientGenerator {
         return gradient;
     }
 
-    public static ArrayList<String> blockMatching(ArrayList<double[]> gradient) {
-        for (double[] colour : gradient) {
-            System.out.println(Arrays.toString(colour));
+    public static ArrayList<List<BlockMatch>> blockMatchingGradient(double[] lab1, double[] lab2, int steps, int blockMatches, String blockJSONPath) {
+        ArrayList<double[]> gradient = gradient(lab1, lab2, steps);
+
+        ArrayList<List<BlockMatch>> mainArray = new ArrayList<>();
+
+        for (double[] arr : gradient) {
+            System.out.println(Arrays.toString(arr));
+            List<BlockMatch> colourMatch = match(arr, blockJSONPath, blockMatches);
+
+            for (BlockMatch block : colourMatch) {
+                System.out.println(block.blockId + " | " + block.face);
+            }
+            mainArray.add(colourMatch);
+
         }
-        return null;
+
+        return mainArray;
     }
 }
