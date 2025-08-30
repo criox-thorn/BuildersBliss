@@ -19,9 +19,9 @@ The Texture Generator takes either a block or colour and gives the user-defined-
 
 ## To-Do
 ### Three Main Features
-❌ Palette Generator <br>
-❌ Gradient Generator <br>
-❌ Texture Generator <br>
+✔️ Palette Generator <br>
+✔️ Gradient Generator <br>
+✔️ Texture Generator <br>
 
 ### Required Features
 ✔️ Jar Extraction for other mods <br>
@@ -30,7 +30,7 @@ The Texture Generator takes either a block or colour and gives the user-defined-
 ✔️ ΔE Calculation <br>
 ✔️ Gradient Generation <br>
 ✔️ Random Colour Generator <br>
-❌ Block Matching <br>
+✔️ Block Matching <br>
 
 ### Non-Required Dependencies
 ❌ A Toggle for Solid Blocks Only <br>
